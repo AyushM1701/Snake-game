@@ -80,9 +80,9 @@ const handleGameOver = () => {
   playBoard.appendChild(overlay);
   
   overlay.querySelector('.restart-btn').addEventListener('click', () => {
-    initGame();
-    startGame();
-  });
+  startBtn.click(); // simulate click on the main Start button
+});
+
   
   startBtn.innerText = "Restart";
   startBtn.disabled = false;
