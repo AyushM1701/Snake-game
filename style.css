@@ -17,7 +17,7 @@ body {
 
 .wrapper {
   width: 70vmin;
-  height: 75vmin;
+  height: 80vmin;
   background: #1a1f2e;
   border-radius: 10px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
@@ -59,8 +59,13 @@ body {
 }
 
 @keyframes pulse {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.1); }
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
 }
 
 .play-board .head {
@@ -70,30 +75,88 @@ body {
 
 .controls {
   background: #2a2f45;
-  padding: 10px 5px;
+  padding: 15px 10px;
 }
-
 
 .arrow-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  grid-template-rows: repeat(3, 1fr);
-  gap: 10px;
-  width: 100%;
-  justify-items: center;
-  align-items: center;
+  grid-template-rows: auto;
+  gap: 8px;
+  width: 180px;
+  margin: 0 auto;
 }
 
 .arrow-grid i {
-  font-size: 1.5rem;
-  padding: 12px;
-  width: 48px;
-  height: 48px;
+  font-size: 1.1rem;
+  padding: 10px;
+  width: 40px;
+  height: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
+  border-radius: 8px;
+  cursor: pointer;
+  background: #3a3f5a;
+  color: #33ccff;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease;
+  position: relative;
+  overflow: hidden;
 }
 
+.arrow-grid i::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, rgba(51, 204, 255, 0.2), transparent);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.arrow-grid i:hover {
+  background: #50577e;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+}
+
+.arrow-grid i:hover::after {
+  opacity: 1;
+}
+
+.arrow-grid i:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Arrow positions */
+.arrow-grid i[data-key="ArrowUp"] {
+  grid-column: 2;
+  grid-row: 1;
+}
+
+.arrow-grid i[data-key="ArrowLeft"] {
+  grid-column: 1;
+  grid-row: 2;
+}
+
+.arrow-grid i[data-key="ArrowDown"] {
+  grid-column: 2;
+  grid-row: 2;
+}
+
+.arrow-grid i[data-key="ArrowRight"] {
+  grid-column: 3;
+  grid-row: 2;
+}
+.arrow-grid i.active {
+  background: #33ccff;
+  color: white;
+  box-shadow: 0 0 10px rgba(51, 204, 255, 0.5);
+}
 
 .arrow-grid i:hover {
   background: #50577e;
@@ -109,14 +172,14 @@ body {
 .buttons button {
   flex: 1;
   margin: 0 5px;
-  font-size: 1.2rem;
+  font-size: 1rem;
   color: white;
   background: #3a3f5a;
   border: none;
   border-radius: 5px;
   cursor: pointer;
   transition: all 0.3s ease;
-  padding: 10px;
+  padding: 8px;
 }
 
 .buttons button:hover {
@@ -146,7 +209,9 @@ body {
   font-weight: bold;
 }
 
-.final-score, .final-level, .high-score-display {
+.final-score,
+.final-level,
+.high-score-display {
   font-size: 1.3rem;
   margin-bottom: 10px;
 }
@@ -170,7 +235,7 @@ body {
 @media screen and (max-width: 800px) {
   .wrapper {
     width: 90vmin;
-    height: 120vmin;
+    height: 110vmin;
   }
 
   .game-details {
@@ -178,16 +243,20 @@ body {
     padding: 10px;
   }
 
-  .arrow-grid i {
-  font-size: 1.4rem;
-  padding: 10px;
-  width: 40px;
-  height: 40px;
-}
+  .arrow-grid {
+    width: 160px;
+  }
 
+  .arrow-grid i {
+    font-size: 1rem;
+    padding: 8px;
+    width: 36px;
+    height: 36px;
+    border-radius: 6px;
+  }
 
   .buttons button {
-    font-size: 1rem;
-    padding: 12px;
+    font-size: 0.9rem;
+    padding: 8px;
   }
 }
