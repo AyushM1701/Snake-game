@@ -203,3 +203,14 @@ document.addEventListener("keyup", (e) => {
     startGame();
   }
 });
+const vibrate = () => {
+  if (navigator.vibrate) navigator.vibrate(50);
+};
+
+controls.forEach(button => {
+  button.addEventListener("click", e => {
+    changeDirection(e);
+    vibrate();
+  });
+});
+
