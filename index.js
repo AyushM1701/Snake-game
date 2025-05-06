@@ -74,7 +74,6 @@ const handleGameOver = () => {
     <div class="final-score">Score: ${gameVariables.score}</div>
     <div class="final-level">Level: ${gameVariables.level}</div>
     <div class="high-score-display">High Score: ${gameVariables.highScore}</div>
-    <button class="restart-btn">Play Again</button>
   `;
   
   playBoard.appendChild(overlay);
