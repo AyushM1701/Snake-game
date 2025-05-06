@@ -70,8 +70,9 @@ body {
 
 .controls {
   background: #2a2f45;
-  padding: 15px;
+  padding: 10px 5px;
 }
+
 
 .arrow-grid {
   display: grid;
@@ -84,16 +85,15 @@ body {
 }
 
 .arrow-grid i {
-  font-size: 2rem;
-  padding: 20px;
-  color: white;
-  background: #3a3f5a;
-  border-radius: 10px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  text-align: center;
-  user-select: none;
+  font-size: 1.5rem;
+  padding: 12px;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
+
 
 .arrow-grid i:hover {
   background: #50577e;
@@ -179,9 +179,12 @@ body {
   }
 
   .arrow-grid i {
-    font-size: 2.2rem;
-    padding: 25px;
-  }
+  font-size: 1.4rem;
+  padding: 10px;
+  width: 40px;
+  height: 40px;
+}
+
 
   .buttons button {
     font-size: 1rem;
