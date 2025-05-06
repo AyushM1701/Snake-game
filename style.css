@@ -38,10 +38,6 @@ body {
   gap: 15px;
 }
 
-.game-details span {
-  white-space: nowrap;
-}
-
 .level {
   color: #33ccff;
   font-weight: bold;
@@ -72,14 +68,45 @@ body {
   border-radius: 4px;
 }
 
-.controls, .buttons {
+.controls {
+  background: #2a2f45;
+  padding: 15px;
+}
+
+.arrow-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  gap: 10px;
+  width: 100%;
+  justify-items: center;
+  align-items: center;
+}
+
+.arrow-grid i {
+  font-size: 2rem;
+  padding: 20px;
+  color: white;
+  background: #3a3f5a;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: center;
+  user-select: none;
+}
+
+.arrow-grid i:hover {
+  background: #50577e;
+}
+
+.buttons {
   display: flex;
   justify-content: space-between;
   background: #2a2f45;
   padding: 10px;
 }
 
-.controls i, .buttons button {
+.buttons button {
   flex: 1;
   margin: 0 5px;
   font-size: 1.2rem;
@@ -89,10 +116,10 @@ body {
   border-radius: 5px;
   cursor: pointer;
   transition: all 0.3s ease;
-  padding: 8px 0;
+  padding: 10px;
 }
 
-.controls i:hover, .buttons button:hover {
+.buttons button:hover {
   background: #50577e;
 }
 
@@ -119,20 +146,9 @@ body {
   font-weight: bold;
 }
 
-.final-score {
-  font-size: 1.5rem;
-  margin-bottom: 10px;
-}
-
-.final-level {
+.final-score, .final-level, .high-score-display {
   font-size: 1.3rem;
   margin-bottom: 10px;
-  color: #33ccff;
-}
-
-.high-score-display {
-  font-size: 1.3rem;
-  margin-bottom: 30px;
 }
 
 .restart-btn {
@@ -159,22 +175,16 @@ body {
 
   .game-details {
     font-size: 1rem;
-    padding: 15px 15px;
+    padding: 10px;
   }
 
-  .controls {
-    display: flex;
+  .arrow-grid i {
+    font-size: 2.2rem;
+    padding: 25px;
   }
 
-  .controls i {
+  .buttons button {
     font-size: 1rem;
-  }
-  
-  .game-over-text {
-    font-size: 1.8rem;
-  }
-  
-  .final-score, .high-score-display, .final-level {
-    font-size: 1.2rem;
+    padding: 12px;
   }
 }
