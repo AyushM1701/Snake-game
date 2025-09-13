@@ -8,6 +8,7 @@ const pauseBtn = document.getElementById("pause-btn");
 const eatSound = document.getElementById("eat-sound");
 const hitSound = document.getElementById("hit-sound");
 const levelupSound = document.getElementById("levelup-sound");
+
 let currentDirection = "";
 let gameVariables = {
   foodX: 0,
@@ -29,10 +30,13 @@ let gameVariables = {
 
 const initGame = () => {
   const existingOverlay = document.querySelector(".game-over-overlay");
-  if (existingOverlay) playBoard.removeChild(existingOverlay);
+  if (existingOverlay) existingOverlay.remove();
+
+  // Clear any existing game loop
+  if (gameVariables.setIntervalId) clearInterval(gameVariables.setIntervalId);
 
   gameVariables = {
-    ...gameVariables,
+    ...gameVariables, // Preserves high score
     snakeX: 5,
     snakeY: 5,
     velocityX: 0,
@@ -43,18 +47,27 @@ const initGame = () => {
     speed: 200,
     isPaused: false,
     gameOver: false,
+    gameStarted: false,
   };
+
+  currentDirection = "";
+  document
+    .querySelectorAll(".arrow-grid i")
+    .forEach((arrow) => arrow.classList.remove("active"));
 
   updateUI();
   updateFoodPosition();
-  playBoard.innerHTML = "";
+  playBoard.innerHTML = ""; // Clear the board for a fresh start
+
+  startBtn.innerText = "Start";
+  startBtn.disabled = false;
+  pauseBtn.innerText = "Pause";
 };
 
 const updateUI = () => {
   scoreElement.innerText = `Score: ${gameVariables.score}`;
   levelElement.innerText = `Level: ${gameVariables.level}`;
   highScoreElement.innerText = `High Score: ${gameVariables.highScore}`;
-  pauseBtn.innerText = "Pause";
 };
 
 const updateFoodPosition = () => {
@@ -69,58 +82,61 @@ const handleGameOver = () => {
 
   const overlay = document.createElement("div");
   overlay.className = "game-over-overlay";
+
   overlay.innerHTML = `
     <div class="game-over-text">GAME OVER</div>
     <div class="final-score">Score: ${gameVariables.score}</div>
     <div class="final-level">Level: ${gameVariables.level}</div>
     <div class="high-score-display">High Score: ${gameVariables.highScore}</div>
+    <button class="restart-btn">Restart</button>
   `;
-
   playBoard.appendChild(overlay);
 
-  overlay.querySelector(".restart-btn").addEventListener("click", () => {
-    startBtn.click(); // simulate click on the main Start button
-  });
+  overlay.querySelector(".restart-btn").addEventListener("click", startGame);
 
   startBtn.innerText = "Restart";
   startBtn.disabled = false;
+  gameVariables.gameStarted = false;
 };
 
-// Modify the changeDirection function to add/remove active class
 const changeDirection = (e) => {
-  if (gameVariables.gameOver || !gameVariables.gameStarted) return;
+  if (
+    gameVariables.gameOver ||
+    !gameVariables.gameStarted ||
+    gameVariables.isPaused
+  )
+    return;
 
   const key = e.key || e.target.dataset.key;
-
-  // Remove active class from all arrows
-  document.querySelectorAll(".arrow-grid i").forEach((arrow) => {
-    arrow.classList.remove("active");
-  });
 
   if (key === "ArrowUp" && gameVariables.velocityY !== 1) {
     gameVariables.velocityX = 0;
     gameVariables.velocityY = -1;
-    currentDirection = "ArrowUp";
   } else if (key === "ArrowDown" && gameVariables.velocityY !== -1) {
     gameVariables.velocityX = 0;
     gameVariables.velocityY = 1;
-    currentDirection = "ArrowDown";
   } else if (key === "ArrowLeft" && gameVariables.velocityX !== 1) {
     gameVariables.velocityX = -1;
     gameVariables.velocityY = 0;
-    currentDirection = "ArrowLeft";
   } else if (key === "ArrowRight" && gameVariables.velocityX !== -1) {
     gameVariables.velocityX = 1;
     gameVariables.velocityY = 0;
-    currentDirection = "ArrowRight";
+  } else {
+    return; // Do nothing if the direction is invalid or the same
   }
 
-  // Add active class to current arrow
-  if (currentDirection) {
-    document
-      .querySelector(`.arrow-grid i[data-key="${currentDirection}"]`)
-      .classList.add("active");
-  }
+  // Update visual indicator for controls
+  currentDirection = key;
+  document.querySelectorAll(".arrow-grid i").forEach((arrow) => {
+    arrow.classList.remove("active");
+  });
+  const currentArrow = document.querySelector(
+    `.arrow-grid i[data-key="${currentDirection}"]`
+  );
+  if (currentArrow) currentArrow.classList.add("active");
+
+  // Run a single game loop immediately for responsiveness
+  gameLoop();
 };
 
 controls.forEach((button) => button.addEventListener("click", changeDirection));
@@ -129,55 +145,25 @@ const checkLevelUp = () => {
   const newLevel = Math.floor(gameVariables.score / 5) + 1;
   if (newLevel > gameVariables.level) {
     gameVariables.level = newLevel;
-    levelElement.innerText = `Level: ${gameVariables.level}`;
     levelupSound.play();
-
-    // Increase speed (max 50ms min)
     gameVariables.speed = Math.max(200 - gameVariables.level * 15, 50);
     clearInterval(gameVariables.setIntervalId);
     gameVariables.setIntervalId = setInterval(gameLoop, gameVariables.speed);
 
-    // Visual feedback
-    playBoard.style.boxShadow = "0 0 20px #33ccff";
+    // Visual feedback for leveling up
+    playBoard.style.boxShadow = "0 0 20px #ffffffff";
     setTimeout(() => (playBoard.style.boxShadow = "none"), 300);
+    updateUI();
   }
 };
 
 const gameLoop = () => {
   if (gameVariables.gameOver || gameVariables.isPaused) return;
 
-  let html = `<div class="food" style="grid-area: ${gameVariables.foodY} / ${gameVariables.foodX}"></div>`;
-
-  // Check if snake ate food
-  if (
-    gameVariables.snakeX === gameVariables.foodX &&
-    gameVariables.snakeY === gameVariables.foodY
-  ) {
-    eatSound.play();
-    updateFoodPosition();
-    gameVariables.snakeBody.push([gameVariables.foodY, gameVariables.foodX]);
-    gameVariables.score++;
-    scoreElement.innerText = `Score: ${gameVariables.score}`;
-    checkLevelUp();
-
-    if (gameVariables.score > gameVariables.highScore) {
-      gameVariables.highScore = gameVariables.score;
-      localStorage.setItem("high-score", gameVariables.highScore);
-      highScoreElement.innerText = `High Score: ${gameVariables.highScore}`;
-    }
-  }
-
-  // Update snake position
   gameVariables.snakeX += gameVariables.velocityX;
   gameVariables.snakeY += gameVariables.velocityY;
 
-  // Shift snake body
-  for (let i = gameVariables.snakeBody.length - 1; i > 0; i--) {
-    gameVariables.snakeBody[i] = gameVariables.snakeBody[i - 1];
-  }
-  gameVariables.snakeBody[0] = [gameVariables.snakeX, gameVariables.snakeY];
-
-  // Check collisions
+  // 1. Check for Wall Collision
   if (
     gameVariables.snakeX <= 0 ||
     gameVariables.snakeX > 30 ||
@@ -187,6 +173,35 @@ const gameLoop = () => {
     return handleGameOver();
   }
 
+  // 2. Check for Food Collision
+  let foodEaten = false;
+  if (
+    gameVariables.snakeX === gameVariables.foodX &&
+    gameVariables.snakeY === gameVariables.foodY
+  ) {
+    foodEaten = true;
+    eatSound.play();
+    updateFoodPosition();
+    gameVariables.score++;
+    if (gameVariables.score > gameVariables.highScore) {
+      gameVariables.highScore = gameVariables.score;
+      localStorage.setItem("high-score", gameVariables.highScore);
+    }
+    updateUI();
+    checkLevelUp();
+  }
+
+  // 3. Update Snake Body
+  // Add new head to the front
+  gameVariables.snakeBody.unshift([gameVariables.snakeX, gameVariables.snakeY]);
+
+  // If no food was eaten, remove the tail to simulate movement
+  if (!foodEaten) {
+    gameVariables.snakeBody.pop();
+  }
+
+  // 4. Check for Self Collision
+  // Start loop from 1 to avoid checking the head against itself
   for (let i = 1; i < gameVariables.snakeBody.length; i++) {
     if (
       gameVariables.snakeX === gameVariables.snakeBody[i][0] &&
@@ -196,21 +211,37 @@ const gameLoop = () => {
     }
   }
 
-  // Render snake
-  gameVariables.snakeBody.forEach(([x, y], i) => {
-    html += `<div class="head" style="grid-area: ${y} / ${x}"></div>`;
+  // 5. Render the Board
+  let html = `<div class="food" style="grid-area: ${gameVariables.foodY} / ${gameVariables.foodX}"></div>`;
+  gameVariables.snakeBody.forEach(([x, y], index) => {
+    const segmentClass = index === 0 ? "head" : "body";
+    html += `<div class="${segmentClass}" style="grid-area: ${y} / ${x}"></div>`;
   });
-
   playBoard.innerHTML = html;
 };
 
 const startGame = () => {
   if (gameVariables.gameStarted && !gameVariables.gameOver) return;
 
-  initGame();
+  initGame(); // Reset the game state
+
   gameVariables.gameStarted = true;
   startBtn.innerText = "Running";
   startBtn.disabled = true;
+
+  // Set the snake's starting position and render it immediately
+  gameVariables.snakeBody.push([gameVariables.snakeX, gameVariables.snakeY]);
+  let html = `<div class="food" style="grid-area: ${gameVariables.foodY} / ${gameVariables.foodX}"></div>`;
+  html += `<div class="head" style="grid-area: ${gameVariables.snakeY} / ${gameVariables.snakeX}"></div>`;
+  playBoard.innerHTML = html;
+
+  // Start moving right by default
+  gameVariables.velocityX = 1;
+  currentDirection = "ArrowRight";
+  document
+    .querySelector('.arrow-grid i[data-key="ArrowRight"]')
+    .classList.add("active");
+
   gameVariables.setIntervalId = setInterval(gameLoop, gameVariables.speed);
 };
 
@@ -218,20 +249,20 @@ startBtn.addEventListener("click", startGame);
 
 pauseBtn.addEventListener("click", () => {
   if (!gameVariables.gameStarted || gameVariables.gameOver) return;
-
   gameVariables.isPaused = !gameVariables.isPaused;
   pauseBtn.innerText = gameVariables.isPaused ? "Resume" : "Pause";
 });
 
 document.addEventListener("keyup", (e) => {
-  changeDirection(e);
-  if (
-    (e.code === "Space" || e.code === "Enter") &&
-    (!gameVariables.gameStarted || gameVariables.gameOver)
-  ) {
-    startGame();
+  if (e.code === "Space" || e.code === "Enter") {
+    if (!gameVariables.gameStarted || gameVariables.gameOver) {
+      startGame();
+    }
+  } else {
+    changeDirection(e);
   }
 });
+
 const vibrate = () => {
   if (navigator.vibrate) navigator.vibrate(50);
 };
