@@ -9,23 +9,34 @@
 
 body {
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  background: linear-gradient(135deg, #1e1e2f, #3b3b5b);
+  background: linear-gradient(135deg, #000000, #2a2a2a);
 }
 
+.title {
+  font-size: 3.5rem;
+  font-weight: 600;
+  color: #ffffff;
+  letter-spacing: 10px;
+  text-transform: uppercase;
+  margin-bottom: 20px;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+}
 .wrapper {
   width: 70vmin;
   height: 80vmin;
-  background: #1a1f2e;
+  background: #121212;
   border-radius: 10px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
   overflow: hidden;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   position: relative;
+  border: 1px solid #333;
 }
 
 .game-details {
@@ -34,47 +45,56 @@ body {
   padding: 15px 20px;
   display: flex;
   justify-content: space-between;
-  background-color: #2a2f45;
+  background-color: #1f1f1f;
   gap: 15px;
 }
 
 .level {
-  color: #33ccff;
+  color: #ffffff;
   font-weight: bold;
+  text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
 }
 
 .play-board {
   flex: 1;
   display: grid;
   grid-template: repeat(30, 1fr) / repeat(30, 1fr);
-  background: #10131c;
+  background: #0a0a0a;
   position: relative;
   transition: box-shadow 0.3s;
 }
 
 .play-board .food {
-  background: #ff3366;
+  background: #ffffff;
   animation: pulse 0.8s infinite;
   border-radius: 50%;
+  box-shadow: 0 0 8px #fff;
 }
 
 @keyframes pulse {
   0%,
   100% {
     transform: scale(1);
+    opacity: 1;
   }
   50% {
     transform: scale(1.1);
+    opacity: 0.8;
   }
 }
 
 .play-board .head {
-  background: #33ccff;
+  background: #ffffff;
   border-radius: 4px;
 }
 
+.play-board .body {
+  background: #aaaaaa;
+  border-radius: 2px;
+}
+
 .controls {
-  background: #2a2f45;
+  background: #1f1f1f;
   padding: 15px 10px;
 }
 
@@ -97,8 +117,8 @@ body {
   justify-content: center;
   border-radius: 8px;
   cursor: pointer;
-  background: #3a3f5a;
-  color: #33ccff;
+  background: #444444;
+  color: #ffffff;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   transition: all 0.2s ease;
   position: relative;
@@ -112,13 +132,13 @@ body {
   left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(135deg, rgba(51, 204, 255, 0.2), transparent);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), transparent);
   opacity: 0;
   transition: opacity 0.2s ease;
 }
 
 .arrow-grid i:hover {
-  background: #50577e;
+  background: #666666;
   transform: translateY(-2px);
   box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
 }
@@ -132,7 +152,6 @@ body {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-/* Arrow positions */
 .arrow-grid i[data-key="ArrowUp"] {
   grid-column: 2;
   grid-row: 1;
@@ -152,20 +171,17 @@ body {
   grid-column: 3;
   grid-row: 2;
 }
-.arrow-grid i.active {
-  background: #33ccff;
-  color: white;
-  box-shadow: 0 0 10px rgba(51, 204, 255, 0.5);
-}
 
-.arrow-grid i:hover {
-  background: #50577e;
+.arrow-grid i.active {
+  background: #ffffff;
+  color: #000000;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
 }
 
 .buttons {
   display: flex;
   justify-content: space-between;
-  background: #2a2f45;
+  background: #1f1f1f;
   padding: 10px;
 }
 
@@ -174,7 +190,7 @@ body {
   margin: 0 5px;
   font-size: 1rem;
   color: white;
-  background: #3a3f5a;
+  background: #444444;
   border: none;
   border-radius: 5px;
   cursor: pointer;
@@ -183,7 +199,7 @@ body {
 }
 
 .buttons button:hover {
-  background: #50577e;
+  background: #666666;
 }
 
 .game-over-overlay {
@@ -192,7 +208,7 @@ body {
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.8);
+  background-color: rgba(0, 0, 0, 0.85);
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -205,7 +221,7 @@ body {
 .game-over-text {
   font-size: 2rem;
   margin-bottom: 20px;
-  color: #ff3366;
+  color: #ffffff;
   font-weight: bold;
 }
 
@@ -218,17 +234,17 @@ body {
 
 .restart-btn {
   padding: 12px 25px;
-  background: #33ccff;
+  background: #ffffff;
   border: none;
   border-radius: 5px;
-  color: white;
+  color: #000000;
   font-size: 1rem;
   cursor: pointer;
   transition: all 0.3s ease;
 }
 
 .restart-btn:hover {
-  background: #00bfff;
+  background: #dddddd;
   transform: scale(1.05);
 }
 
@@ -259,4 +275,33 @@ body {
     font-size: 0.9rem;
     padding: 8px;
   }
+}
+
+.footer {
+  width: 100%;
+  padding: 20px 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+  color: #aaaaaa;
+  font-size: 0.9rem;
+}
+
+.social-media-link svg {
+  width: 20px;
+  height: 20px;
+  fill: #aaaaaa;
+  transition: all 0.3s ease;
+  vertical-align: middle;
+}
+
+.social-media-link:hover svg {
+  fill: #ffffff;
+  transform: scale(1.1);
+}
+
+.v-separator {
+  color: #555555;
+  font-size: 1.2rem;
 }
