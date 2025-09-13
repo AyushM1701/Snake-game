@@ -249,6 +249,12 @@ body {
 }
 
 @media screen and (max-width: 800px) {
+  .title {
+    font-size: 2rem;
+    letter-spacing: 5px;
+    margin-bottom: 15px;
+    text-align: center;
+  }
   .wrapper {
     width: 90vmin;
     height: 110vmin;
